@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maqsurown Bespoke Shirt Studio</title>
+    
+    <!-- Google Fonts CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Core Design System & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        
+        body, html {
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background-color: #f5efe0;
+            overflow: hidden;
+        }
+        /* Main Split Layout */
+        .studio-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+        /* Left Stage Area (~55% width) */
+        .stage-area {
+            width: 55%;
+            height: 100%;
+            background: radial-gradient(circle, #fcfaf5 40%, #e8dec7 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+        
+        /* Subtle Vignette Overlay */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, transparent 60%, rgba(200, 185, 155, 0.25) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* Top-Left Camera/Settings Icon */
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(26, 26, 26, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.85);
+            color: #c4846a;
+            transform: scale(1.05);
+        }
+        /* Left Toolbar (vertically centered) */
+        .left-toolbar {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            z-index: 5;
+        }
+        .pill-btn {
+            background: #c4846a;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 105px;
+            box-shadow: 0 4px 10px rgba(196, 132, 106, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pill-btn:hover {
+            background: #b5705a;
+            transform: translateX(4px);
+            box-shadow: 0 6px 14px rgba(196, 132, 106, 0.35);
+        }
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.85;
+            display: inline-block;
+        }
+        /* Right Action Buttons (vertically centered) */
+        .right-actions {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: flex-end;
+            z-index: 5;
+        }
+        .sq-btn {
+            background: #c4846a;
+            color: #ffffff;
+            border: none;
+            width: 66px;
+            height: 66px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(196, 132, 106, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sq-btn:hover {
+            background: #b5705a;
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(196, 132, 106, 0.35);
+        }
+        .sq-label {
+            font-size: 8px;
+            opacity: 0.75;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .sq-val {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .sq-icon {
+            margin-bottom: 2px;
+        }
+        /* 3D Mannequin & Shirt Canvas Container */
+        .canvas-container {
+            position: relative;
+            z-index: 2;
+        }
+        #shirt-canvas {
+            display: block;
+            max-height: 85vh;
+            max-width: 45vw;
+        }
+        /* Floating Back to Designer Button */
+        #exit-tryon-btn {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(26, 26, 26, 0.85);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            z-index: 6;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+        #exit-tryon-btn:hover {
+            background: #c4846a;
+            border-color: #c4846a;
+        }
+        /* Floating Bottom Summary Area */
+        .bottom-summary {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 5;
+        }
+        .price-wrapper {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .price-curr {
+            font-family: 'Playfair Display', serif;
+            font-size: 34px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .price-old {
+            font-size: 16px;
+            text-decoration: line-through;
+            color: rgba(26, 26, 26, 0.45);
+        }
+        .add-cart-btn {
+            background: #c4846a;
+            color: #ffffff;
+            border: none;
+            padding: 12px 36px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(196, 132, 106, 0.35);
+            transition: all 0.3s ease;
+            width: 170px;
+            text-align: center;
+        }
+        .add-cart-btn:hover {
+            background: #b5705a;
+            box-shadow: 0 6px 18px rgba(196, 132, 106, 0.45);
+            transform: translateY(-2px);
+        }
+        .tap-instruction {
+            font-size: 10px;
+            color: rgba(26, 26, 26, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 4px;
+        }
+        /* Bottom-Left Thumbnail Card */
+        .view-thumbnail {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 72px;
+            height: 94px;
+            background: #fdfcf8;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 4px 4px 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        .view-thumbnail.active {
+            border-color: #c4846a;
+            box-shadow: 0 4px 14px rgba(196, 132, 106, 0.25);
+        }
+        .view-thumbnail canvas {
+            width: 50px;
+            height: 60px;
+        }
+        .view-thumbnail-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        /* Right Fabric Panel (~45% width) */
+        .fabric-panel {
+            width: 45%;
+            height: 100%;
+            background-color: #2a2a2a;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 4;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+        }
+        /* Dark Header Bar at Top */
+        .panel-header {
+            height: 68px;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .hdr-nav-btn {
+            background: #c4846a;
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .hdr-nav-btn:hover {
+            background: #b5705a;
+        }
+        .hdr-title {
+            color: #f0ece0;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .split-btn {
+            background: transparent;
+            color: #c4846a;
+            border: 1.5px solid #c4846a;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .split-btn.active {
+            background: #c4846a;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(196, 132, 106, 0.3);
+        }
+        /* Controls Row */
+        .controls-row {
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #232323;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
+        }
+        .control-pill {
+            background: #1a1a1a;
+            color: #f0ece0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        .control-pill:hover {
+            border-color: #c4846a;
+            color: #c4846a;
+        }
+        
+        /* Filter Dropdown Popup */
+        .filter-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            background: #1e1e1e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            width: 140px;
+            z-index: 10;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .filter-option {
+            padding: 8px 12px;
+            font-size: 10px;
+            color: rgba(240, 236, 224, 0.8);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .filter-option:hover {
+            background: rgba(196, 132, 106, 0.15);
+            color: #c4846a;
+        }
+        .filter-option.active {
+            background: #c4846a;
+            color: #fff;
+        }
+        /* Fabric Grid Scroll Area */
+        .fabric-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px; /* seamless thin line borders */
+            background-color: rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
+            padding: 1px 0;
+        }
+        
+        /* Custom Scrollbar for Fabric Grid */
+        .fabric-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        .fabric-grid::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+        .fabric-grid::-webkit-scrollbar-thumb {
+            background: #1a1a1a;
+            border: 2px solid #2a2a2a;
+            border-radius: 4px;
+        }
+        .fabric-grid::-webkit-scrollbar-thumb:hover {
+            background: #c4846a;
+        }
+        /* Fabric Card Item */
+        .fabric-card {
+            aspect-ratio: 1 / 1;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #333;
+        }
+        .fabric-card canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .fabric-card.rotate-active canvas {
+            transform: rotate(360deg);
+        }
+        /* Fabric Info / Rotate Badges */
+        .badge-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(26, 26, 26, 0.85);
+            color: #f0ece0;
+            font-size: 8px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .badge-rotate {
+            position: absolute;
+            top: 10px;
+            left: 38px;
+            background: rgba(26, 26, 26, 0.85);
+            color: #f0ece0;
+            font-size: 8px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .badge-applied {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: #f0ece0;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Fabric Label at Bottom-Left */
+        .fabric-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 2;
+        }
+        /* Dynamic Customise Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            background: #1e2820;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            width: 460px;
+            max-width: 90%;
+            padding: 24px;
+            position: relative;
+            color: #f0ece0;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        @keyframes modalFadeIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: rgba(240, 236, 224, 0.5);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .modal-close:hover {
+            color: #c4846a;
+        }
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        
+        .modal-group-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: rgba(240, 236, 224, 0.4);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .modal-option-section {
+            margin-bottom: 20px;
+        }
+        .chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip-btn {
+            background: rgba(255, 255, 255, 0.04);
+            color: #f0ece0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .chip-btn:hover {
+            border-color: #c4846a;
+            color: #c4846a;
+        }
+        .chip-btn.selected {
+            background: #c4846a;
+            border-color: #c4846a;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(196, 132, 106, 0.2);
+        }
+        .modal-input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+        .modal-input-field:focus {
+            border-color: #c4846a;
+        }
+        .modal-apply-btn {
+            background: #c4846a;
+            color: #ffffff;
+            border: none;
+            padding: 12px 0;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .modal-apply-btn:hover {
+            background: #b5705a;
+        }
+        /* Virtual Try-On Modal styling */
+        .tryon-modal-box {
+            width: 500px;
+            max-width: 95%;
+            background: #111;
+            padding: 20px;
+        }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #tryon-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+        .video-guide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed rgba(196, 132, 106, 0.5);
+            border-radius: 8px;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tryon-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .tryon-btn {
+            flex: 1;
+            background: #c4846a;
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        .tryon-btn:hover {
+            background: #b5705a;
+        }
+        .tryon-btn-alt {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tryon-btn-alt:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        /* Toast System */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            background: rgba(26, 26, 26, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f0ece0;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            transform: translateY(40px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="studio-container">
+    
+    <!-- LEFT STAGE AREA -->
+    <div class="stage-area">
+        <div class="vignette"></div>
+        
+        <!-- Settings Gear Icon -->
+        <button class="settings-btn" id="settings-trigger" title="Settings">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M9.405 1.02c-.252-.772-1.353-.772-1.605 0a1.164 1.164 0 0 1-1.633.778c-.768-.423-1.68.374-1.258 1.144a1.164 1.164 0 0 1-.778 1.633c-.772.252-.772 1.353 0 1.605.423.252.614.768.423 1.535l-.01.01a1.164 1.164 0 0 1-1.144 1.258c-.772-.252-1.353-.252-1.605 0a1.164 1.164 0 0 1-.778 1.633c-.423.768.374 1.68 1.144 1.258a1.164 1.164 0 0 1 1.633.778c.252.772 1.353.772 1.605 0a1.164 1.164 0 0 1 1.633-.778c.768.423 1.68-.374 1.258-1.144a1.164 1.164 0 0 1 .778-1.633c.772-.252.772-1.353 0-1.605a1.164 1.164 0 0 1-.423-1.535l.01-.01a1.164 1.164 0 0 1 1.144-1.258c.772.252 1.353.252 1.605 0a1.164 1.164 0 0 1 .778-1.633c.423-.768-.374-1.68-1.144-1.258a1.164 1.164 0 0 1-1.633-.778zM8 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+            </svg>
+        </button>
+        
+        <!-- Left Toolbar (Customisation Categories) -->
+        <div class="left-toolbar">
+            <button class="pill-btn" onclick="openModal('Collar')">
+                <span class="pill-dot"></span>Collar
+            </button>
+            <button class="pill-btn" onclick="openModal('Pocket')">
+                <span class="pill-dot"></span>Pocket
+            </button>
+            <button class="pill-btn" onclick="openModal('Sleeve')">
+                <span class="pill-dot"></span>Sleeve
+            </button>
+            <button class="pill-btn" onclick="openModal('Hem')">
+                <span class="pill-dot"></span>Hem
+            </button>
+            <button class="pill-btn" onclick="openModal('Name')">
+                <span class="pill-dot"></span>Name
+            </button>
+        </div>
+        
+        <!-- Right Action Buttons -->
+        <div class="right-actions">
+            <!-- Try On -->
+            <button class="sq-btn" id="tryon-trigger">
+                <svg class="sq-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.83.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"/>
+                    <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                </svg>
+                <span style="font-size: 8px; font-weight: 700; text-transform: uppercase;">Try-On</span>
+            </button>
+            <!-- Size / 50 -->
+            <button class="sq-btn" onclick="openModal('Size')">
+                <span class="sq-label">Size</span>
+                <span class="sq-val" id="size-val">50</span>
+            </button>
+            <!-- Fit / Loose -->
+            <button class="sq-btn" onclick="openModal('Fit')">
+                <span class="sq-label">Fit</span>
+                <span class="sq-val" id="fit-val">Loose</span>
+            </button>
+            <!-- Style / Men -->
+            <button class="sq-btn" onclick="openModal('Style')">
+                <span class="sq-label">Style</span>
+                <span class="sq-val" id="style-val">Men</span>
+            </button>
+            <!-- Share -->
+            <button class="sq-btn" id="share-btn">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- 3D Mannequin Shirt Canvas -->
+        <div class="canvas-container">
+            <button id="exit-tryon-btn" onclick="exitTryOn()">Back to Designer</button>
+            <canvas id="shirt-canvas" width="440" height="560"></canvas>
+        </div>
+        
+        <!-- Bottom Floating Summary -->
+        <div class="bottom-summary">
+            <div class="price-wrapper">
+                <span class="price-curr" id="price-val-display">₹1093</span>
+                <span class="price-old" id="price-old-display">₹2185</span>
+            </div>
+            <button class="add-cart-btn" id="cart-add-btn">Add to Cart</button>
+            <div class="tap-instruction">Tap components to change fabric</div>
+        </div>
+        
+        <!-- Bottom-Left Thumbnail View Toggle -->
+        <div class="view-thumbnail active" id="view-toggle-thumbnail">
+            <canvas id="thumbnail-canvas" width="60" height="70"></canvas>
+            <span class="view-thumbnail-label" id="view-thumbnail-label">Back</span>
+        </div>
+    </div>
+    
+    <!-- RIGHT FABRIC PANEL -->
+    <div class="fabric-panel">
+        
+        <!-- Header Bar -->
+        <div class="panel-header">
+            <button class="hdr-nav-btn" onclick="navigatePart(-1)">&lt;</button>
+            <div class="hdr-title" id="panel-part-title">Body Fabric</div>
+            <button class="split-btn" id="split-toggle-btn">Split</button>
+            <button class="hdr-nav-btn" onclick="navigatePart(1)">&gt;</button>
+        </div>
+        
+        <!-- Controls Row -->
+        <div class="controls-row">
+            <button class="control-pill" id="filter-pill-btn">
+                <span>🔽</span> Filters
+            </button>
+            
+            <!-- Filter Dropdown -->
+            <div class="filter-dropdown" id="filter-dropdown-menu">
+                <div class="filter-option active" onclick="applyFilter('all')">All Fabrics</div>
+                <div class="filter-option" onclick="applyFilter('poplin')">Poplin</div>
+                <div class="filter-option" onclick="applyFilter('cotton')">Cotton</div>
+                <div class="filter-option" onclick="applyFilter('linen')">Linen</div>
+                <div class="filter-option" onclick="applyFilter('premium')">Premium</div>
+            </div>
+            
+            <button class="control-pill" id="sort-pill-btn" onclick="toggleSort()">
+                Sort by price <span id="sort-arrow">⇅</span>
+            </button>
+        </div>
+        
+        <!-- Scrollable Fabric Cards Grid -->
+        <div class="fabric-grid" id="fabric-grid-container">
+            <!-- Grid cards are dynamically injected here -->
+        </div>
+    </div>
+</div>
+<!-- DYNAMIC CUSTOMISE MODAL -->
+<div class="modal-overlay" id="customise-modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-title" id="modal-title-text">Collar Customization</div>
+        <div id="modal-groups-container">
+            <!-- Dynamically populated settings groups -->
+        </div>
+        <button class="modal-apply-btn" onclick="applySelection()">Apply Selection</button>
+    </div>
+</div>
+<!-- VIRTUAL TRY-ON MODAL -->
+<div class="modal-overlay" id="tryon-modal">
+    <div class="modal-box tryon-modal-box">
+        <button class="modal-close" id="tryon-close-btn">&times;</button>
+        <div class="modal-title" style="margin-bottom:12px;">Virtual Try-On</div>
+        <div class="video-wrapper">
+            <video id="tryon-video" autoplay playsinline></video>
+            <div class="video-guide">
+                <div style="border: 2px dashed rgba(196,132,106,0.6); padding: 20px; border-radius: 8px;">
+                    Position yourself here
+                </div>
+            </div>
+        </div>
+        
+        <div class="tryon-controls">
+            <button class="tryon-btn" id="tryon-capture-btn">Capture</button>
+            <button class="tryon-btn tryon-btn-alt" onclick="document.getElementById('tryon-upload').click()">Upload Photo</button>
+            <input type="file" id="tryon-upload" accept="image/*" style="display: none;">
+        </div>
+    </div>
+</div>
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-root"></div>
+<script>
+    // --- STATE MANAGEMENT ---
+    let currentView = 'front'; // 'front' or 'back'
+    let activePartIndex = 0; // index in PARTS array
+    const PARTS = ['BODY', 'COLLAR', 'POCKET', 'SLEEVE', 'HEM'];
+    let splitMode = false;
+    let activeCategory = 'all';
+    let sortOrder = 'none'; // 'none', 'asc', 'desc'
+    let tryOnImage = null; // offscreen canvas holding webcam frame or uploaded photo
+    let cameraStream = null;
+    
+    // Customization Settings
+    let custOpts = {
+        collarStyle: 'Regular Spread',
+        collarButtons: 'White Pearl',
+        pocketType: 'No Pocket',
+        pocketPosition: 'Left Chest',
+        sleeveLength: 'Sleeveless',
+        sleeveCuff: 'Simple Hem',
+        hemStyle: 'Straight Cut',
+        hemFinish: 'Plain',
+        namePosition: 'None',
+        nameFont: 'Classic Serif',
+        nameText: 'MAQSUR',
+        sizeChest: '50',
+        fitFit: 'Loose',
+        styleGender: 'Men'
+    };
+    // Fabric Database
+    const fabrics = [
+        { id: 'seersucker', name: 'SEERSUCKER', category: 'cotton', price: 896, type: 'seer', c1: '#f0c8c4', c2: '#d09090', showInfo: false, showRotate: false },
+        { id: 'lawn_cotton_weave', name: 'LAWN COTTON', category: 'cotton', price: 1093, type: 'weave', c1: '#b0b8c8', c2: '#5868a0', showInfo: false, showRotate: false },
+        { id: 'poly_crepe_floral', name: 'POLY CREPE', category: 'premium', price: 1240, type: 'floral', c1: '#b8c8e8', c2: '#6878c8', showInfo: false, showRotate: false },
+        { id: 'cotton_viscose', name: 'COTTON VISCOSE', category: 'cotton', price: 980, type: 'vstripe', c1: '#ccccec', c2: '#6068b0', showInfo: true, showRotate: true },
+        { id: 'corduroy', name: 'CORDUROY', category: 'premium', price: 1380, type: 'plaid', c1: '#b02828', c2: '#8a1010', showInfo: true, showRotate: true },
+        { id: 'lawn_cotton_diamond', name: 'LAWN COTTON', category: 'cotton', price: 960, type: 'diamond', c1: '#c0ccdc', c2: '#7888a8', showInfo: false, showRotate: false },
+        { id: 'poly_crepe_dot', name: 'POLY CREPE', category: 'premium', price: 1100, type: 'dot', c1: '#eeeee8', c2: '#404040', showInfo: true, showRotate: false },
+        { id: 'poplin', name: 'POPLIN', category: 'poplin', price: 796, type: 'solid', c1: '#ddd9d2', c2: '#c8c4bc', showInfo: false, showRotate: false },
+        { id: 'poplin_check', name: 'POPLIN CHECK', category: 'poplin', price: 820, type: 'check', c1: '#e8e4dc', c2: '#c0bcb4', showInfo: false, showRotate: false },
+        { id: 'cotton_stripe', name: 'COTTON STRIPE', category: 'cotton', price: 870, type: 'stripe', c1: '#c8d8ec', c2: '#7890b8', showInfo: false, showRotate: false },
+        { id: 'linen', name: 'LINEN', category: 'linen', price: 1150, type: 'linen', c1: '#d8c89c', c2: '#b0a074', showInfo: false, showRotate: false },
+        { id: 'linen_blend', name: 'LINEN BLEND', category: 'linen', price: 1200, type: 'herring', c1: '#d0c0a0', c2: '#906840', showInfo: false, showRotate: false }
+    ];
+    // Selections for each shirt part
+    let fabricSelections = {
+        BODY: fabrics[1],      // LAWN COTTON weave
+        COLLAR: fabrics[1],
+        POCKET: fabrics[1],
+        SLEEVE: fabrics[1],
+        HEM: fabrics[1]
+    };
+    // Modal Configuration Option Specs
+    const modalOptions = {
+        'Collar': {
+            title: 'Collar Customization',
+            groups: [
+                { label: 'COLLAR STYLE', key: 'collarStyle', choices: ['Regular Spread', 'Button Down', 'Mandarin', 'Club', 'Cutaway', 'Tab Collar', 'Band Collar'] },
+                { label: 'BUTTON TYPES', key: 'collarButtons', choices: ['White Pearl', 'Matching', 'Contrast', 'Metal Snap'] }
+            ]
+        },
+        'Pocket': {
+            title: 'Pocket Configuration',
+            groups: [
+                { label: 'POCKET TYPE', key: 'pocketType', choices: ['No Pocket', 'Single Patch', 'Chest Patch', 'Flap Pocket', 'Welt Pocket'] },
+                { label: 'POCKET POSITION', key: 'pocketPosition', choices: ['Left Chest', 'Right Chest', 'Both Sides'] }
+            ]
+        },
+        'Sleeve': {
+            title: 'Sleeve & Cuff Options',
+            groups: [
+                { label: 'SLEEVE LENGTH', key: 'sleeveLength', choices: ['Full Sleeve', 'Half Sleeve', '¾ Sleeve', 'Short Sleeve', 'Sleeveless'] },
+                { label: 'CUFF STYLE', key: 'sleeveCuff', choices: ['Button Cuff', 'French Cuff', 'Simple Hem', 'Contrast Cuff'] }
+            ]
+        },
+        'Hem': {
+            title: 'Hem Style & Finish',
+            groups: [
+                { label: 'HEM STYLE', key: 'hemStyle', choices: ['Straight Cut', 'Curved Hem', 'High-Low', 'Asymmetric'] },
+                { label: 'HEM FINISH', key: 'hemFinish', choices: ['Plain', 'Contrast Band', 'Pintuck', 'French Seam'] }
+            ]
+        },
+        'Name': {
+            title: 'Monogram & Personalization',
+            groups: [
+                { label: 'MONOGRAM POSITION', key: 'namePosition', choices: ['None', 'Left Chest', 'Right Chest', 'Back Collar', 'Cuff'] },
+                { label: 'FONT STYLE', key: 'nameFont', choices: ['Classic Serif', 'Modern Script', 'Bold Block', 'Italic'] }
+            ],
+            showTextInput: true
+        },
+        'Size': {
+            title: 'Select Size',
+            groups: [
+                { label: 'CHEST SIZE (INCHES)', key: 'sizeChest', choices: ['36', '38', '40', '42', '44', '46', '48', '50'] }
+            ]
+        },
+        'Fit': {
+            title: 'Select Fit',
+            groups: [
+                { label: 'FIT STYLE', key: 'fitFit', choices: ['Slim Fit', 'Regular Fit', 'Relaxed Fit', 'Loose Fit'] }
+            ]
+        },
+        'Style': {
+            title: 'Select Style',
+            groups: [
+                { label: 'GENDER STYLE', key: 'styleGender', choices: ['Men', 'Women', 'Kids', 'Unisex'] }
+            ]
+        }
+    };
+    let activeModalCategory = null;
+    let pendingModalSelections = {};
+    // --- FABRIC TEXTURES DRAWER ENGINE ---
+    // Creates offscreen tiles dynamically using ctx primitives
+    function createFabricPattern(type, c1, c2) {
+        const tile = document.createElement('canvas');
+        tile.width = 120;
+        tile.height = 120;
+        const ctx = tile.getContext('2d');
+        
+        ctx.fillStyle = c1;
+        ctx.fillRect(0, 0, 120, 120);
+        
+        if (type === 'solid') {
+            const grad = ctx.createLinearGradient(0, 0, 120, 120);
+            grad.addColorStop(0, 'rgba(255,255,255,0.18)');
+            grad.addColorStop(0.5, 'rgba(255,255,255,0)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.1)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 120, 120);
+        }
+        else if (type === 'check') {
+            const size = 15;
+            ctx.fillStyle = c2;
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    if ((i + j) % 2 === 1) {
+                        ctx.fillRect(i * size, j * size, size, size);
+                    }
+                }
+            }
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= 8; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * size, 0); ctx.lineTo(i * size, 120); ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i * size); ctx.lineTo(120, i * size); ctx.stroke();
+            }
+        }
+        else if (type === 'stripe' || type === 'vstripe') {
+            const widths = [14, 5, 8, 5, 14, 3, 8, 3];
+            let x = 0;
+            ctx.fillStyle = c2;
+            for (let r = 0; r < 2; r++) {
+                for (let i = 0; i < widths.length; i++) {
+                    const w = widths[i];
+                    if (i % 2 === 1) {
+                        ctx.fillRect(x, 0, w, 120);
+                    }
+                    x += w;
+                }
+            }
+        }
+        else if (type === 'seer') {
+            const bandWidth = 10;
+            ctx.fillStyle = c2;
+            for (let x = 0; x < 120; x += bandWidth * 2) {
+                ctx.fillRect(x, 0, bandWidth, 120);
+            }
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 0.8;
+            for (let y = 0; y < 120; y += 4) {
+                ctx.beginPath();
+                for (let x = 0; x < 120; x += 5) {
+                    ctx.lineTo(x, y + Math.sin(x * 0.5) * 0.6);
+                }
+                ctx.stroke();
+            }
+            ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+            for (let x = 5; x < 120; x += 10) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0); ctx.lineTo(x, 120); ctx.stroke();
+            }
+        }
+        else if (type === 'diamond') {
+            ctx.strokeStyle = c2;
+            ctx.lineWidth = 1.5;
+            const size = 30;
+            for (let x = -size; x < 120 + size; x += size) {
+                for (let y = -size; y < 120 + size; y += size) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + size / 2, y);
+                    ctx.lineTo(x + size, y + size / 2);
+                    ctx.lineTo(x + size / 2, y + size);
+                    ctx.lineTo(x, y + size / 2);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            }
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            for (let x = -size; x < 120 + size; x += size) {
+                for (let y = -size; y < 120 + size; y += size) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, y); ctx.lineTo(x + size, y + size);
+                    ctx.moveTo(x + size, y); ctx.lineTo(x, y + size);
+                    ctx.stroke();
+                }
+            }
+            ctx.setLineDash([]);
+        }
+        else if (type === 'weave') {
+            ctx.fillStyle = c2;
+            const size = 40;
+            for (let x = 0; x < 120; x += size) {
+                for (let y = 0; y < 120; y += size) {
+                    // Leaf 1
+                    ctx.save();
+                    ctx.translate(x + size/2, y + size/2);
+                    ctx.rotate(Math.PI / 4);
+                    ctx.beginPath();
+                    ctx.moveTo(0, -12);
+                    ctx.bezierCurveTo(10, -12, 12, 5, 0, 15);
+                    ctx.bezierCurveTo(-12, 5, -10, -12, 0, -12);
+                    ctx.fill();
+                    
+                    ctx.strokeStyle = c1;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 15); ctx.lineTo(0, -8); ctx.stroke();
+                    ctx.restore();
+                    // Leaf 2
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(-Math.PI / 4);
+                    ctx.beginPath();
+                    ctx.moveTo(0, -8);
+                    ctx.bezierCurveTo(6, -8, 8, 3, 0, 10);
+                    ctx.bezierCurveTo(-8, 3, -6, -8, 0, -8);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+        }
+        else if (type === 'dot') {
+            ctx.fillStyle = c2;
+            const spacing = 20;
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 6; j++) {
+                    ctx.beginPath();
+                    ctx.arc(i * spacing + spacing/2, j * spacing + spacing/2, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        else if (type === 'linen') {
+            ctx.strokeStyle = c2;
+            ctx.lineWidth = 0.7;
+            for (let y = 0; y < 120; y += 4) {
+                ctx.globalAlpha = 0.35 + Math.random() * 0.35;
+                ctx.beginPath();
+                ctx.moveTo(0, y); ctx.lineTo(120, y); ctx.stroke();
+            }
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x < 120; x += 3) {
+                ctx.globalAlpha = 0.25 + Math.random() * 0.35;
+                ctx.beginPath();
+                ctx.moveTo(x, 0); ctx.lineTo(x, 120); ctx.stroke();
+            }
+            ctx.globalAlpha = 1.0;
+        }
+        else if (type === 'herring') {
+            ctx.strokeStyle = c2;
+            ctx.lineWidth = 1.5;
+            const colWidth = 20;
+            for (let x = 0; x < 120; x += colWidth) {
+                const isLeft = (x / colWidth) % 2 === 0;
+                for (let y = -10; y < 120; y += 8) {
+                    ctx.beginPath();
+                    if (isLeft) {
+                        ctx.moveTo(x, y); ctx.lineTo(x + colWidth, y + 10);
+                    } else {
+                        ctx.moveTo(x + colWidth, y); ctx.lineTo(x, y + 10);
+                    }
+                    ctx.stroke();
+                }
+            }
+        }
+        else if (type === 'floral') {
+            ctx.fillStyle = c2;
+            const centers = [
+                {x: 20, y: 20, r: 8}, {x: 80, y: 30, r: 6},
+                {x: 40, y: 70, r: 7}, {x: 100, y: 80, r: 8},
+                {x: 60, y: 110, r: 5}, {x: 10, y: 90, r: 6}
+            ];
+            centers.forEach(c => {
+                ctx.fillStyle = c2;
+                for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 3) {
+                    const px = c.x + Math.cos(angle) * (c.r * 0.85);
+                    const py = c.y + Math.sin(angle) * (c.r * 0.85);
+                    ctx.beginPath();
+                    ctx.arc(px, py, c.r * 0.7, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.r * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        else if (type === 'plaid') {
+            ctx.fillStyle = c2;
+            ctx.globalAlpha = 0.45;
+            const stripes = [
+                {pos: 10, width: 8}, {pos: 30, width: 15},
+                {pos: 60, width: 8}, {pos: 80, width: 15},
+                {pos: 110, width: 4}
+            ];
+            stripes.forEach(s => {
+                ctx.fillRect(s.pos, 0, s.width, 120);
+                ctx.fillRect(0, s.pos, 120, s.width);
+            });
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = 0.25;
+            const thin = [22, 52, 72, 102];
+            thin.forEach(pos => {
+                ctx.fillRect(pos, 0, 2, 120);
+                ctx.fillRect(0, pos, 120, 2);
+            });
+            ctx.globalAlpha = 1.0;
+        }
+        return tile;
+    }
+    // --- SHIRT SILHOUETTE COORDINATE PATH ---
+    function getShirtBodyPath(ctx, scale = 1.0, offsetX = 0, offsetY = 0) {
+        const p = {
+            nL: {x: 190, y: 125}, nR: {x: 250, y: 125},
+            sL: {x: 130, y: 145}, sR: {x: 310, y: 145},
+            aL: {x: 155, y: 230}, aR: {x: 285, y: 230},
+            wL: {x: 170, y: 330}, wR: {x: 270, y: 330},
+            hL: {x: 145, y: 450}, hR: {x: 295, y: 450},
+            vCenter: {x: 220, y: 185}
+        };
+        
+        // Scale and shift coordinates
+        for (let key in p) {
+            p[key].x = p[key].x * scale + offsetX;
+            p[key].y = p[key].y * scale + offsetY;
+        }
+        
+        ctx.beginPath();
+        ctx.moveTo(p.nL.x, p.nL.y);
+        ctx.lineTo(p.sL.x, p.sL.y);
+        
+        // Left armhole or sleeve cap
+        if (custOpts.sleeveLength === 'Sleeveless') {
+            ctx.quadraticCurveTo(p.sL.x * 1.05 + offsetX, (p.sL.y + p.aL.y)/2, p.aL.x, p.aL.y);
+        } else {
+            let capX = p.sL.x - 30 * scale;
+            let capY = p.sL.y + 40 * scale;
+            if (custOpts.sleeveLength === 'Full Sleeve') {
+                capX = p.sL.x - 45 * scale; capY = p.sL.y + 180 * scale;
+            } else if (custOpts.sleeveLength === '¾ Sleeve') {
+                capX = p.sL.x - 40 * scale; capY = p.sL.y + 120 * scale;
+            } else if (custOpts.sleeveLength === 'Short Sleeve') {
+                capX = p.sL.x - 20 * scale; capY = p.sL.y + 20 * scale;
+            }
+            ctx.lineTo(capX, capY);
+            ctx.lineTo(p.aL.x, p.aL.y);
+        }
+        
+        // Waist and bottom left curves
+        ctx.bezierCurveTo(p.aL.x * 0.95 + offsetX, p.wL.y * 0.8 + offsetY, p.wL.x, p.wL.y, p.wL.x, p.wL.y);
+        ctx.quadraticCurveTo(p.wL.x * 0.9 + offsetX, p.hL.y * 0.9 + offsetY, p.hL.x, p.hL.y);
+        
+        // Hem Style
+        if (custOpts.hemStyle === 'Straight Cut') {
+            ctx.lineTo(p.hR.x, p.hR.y);
+        } else if (custOpts.hemStyle === 'Curved Hem') {
+            ctx.quadraticCurveTo(220 * scale + offsetX, 485 * scale + offsetY, p.hR.x, p.hR.y);
+        } else if (custOpts.hemStyle === 'High-Low') {
+            ctx.quadraticCurveTo(220 * scale + offsetX, 505 * scale + offsetY, p.hR.x, p.hR.y);
+        } else if (custOpts.hemStyle === 'Asymmetric') {
+            ctx.bezierCurveTo(185 * scale + offsetX, 480 * scale + offsetY, 260 * scale + offsetX, 430 * scale + offsetY, p.hR.x, p.hR.y);
+        } else {
+            ctx.lineTo(p.hR.x, p.hR.y);
+        }
+        
+        // Bottom right waist curves
+        ctx.quadraticCurveTo(p.wR.x * 1.1 + offsetX, p.hR.y * 0.9 + offsetY, p.wR.x, p.wR.y);
+        ctx.bezierCurveTo(p.wR.x, p.wR.y, p.aR.x * 1.05 + offsetX, p.wR.y * 0.8 + offsetY, p.aR.x, p.aR.y);
+        
+        // Right armhole or sleeve cap
+        if (custOpts.sleeveLength === 'Sleeveless') {
+            ctx.quadraticCurveTo(p.sR.x * 0.95 + offsetX, (p.sR.y + p.aR.y)/2, p.sR.x, p.sR.y);
+        } else {
+            let capX = p.sR.x + 30 * scale;
+            let capY = p.sR.y + 40 * scale;
+            if (custOpts.sleeveLength === 'Full Sleeve') {
+                capX = p.sR.x + 45 * scale; capY = p.sR.y + 180 * scale;
+            } else if (custOpts.sleeveLength === '¾ Sleeve') {
+                capX = p.sR.x + 40 * scale; capY = p.sR.y + 120 * scale;
+            } else if (custOpts.sleeveLength === 'Short Sleeve') {
+                capX = p.sR.x + 20 * scale; capY = p.sR.y + 20 * scale;
+            }
+            ctx.lineTo(capX, capY);
+            ctx.lineTo(p.sR.x, p.sR.y);
+        }
+        
+        ctx.lineTo(p.nR.x, p.nR.y);
+        
+        // Neck opening curve
+        if (currentView === 'back') {
+            ctx.quadraticCurveTo(220 * scale + offsetX, 135 * scale + offsetY, p.nL.x, p.nL.y);
+        } else {
+            if (custOpts.collarStyle === 'Mandarin' || custOpts.collarStyle === 'Band Collar') {
+                ctx.quadraticCurveTo(220 * scale + offsetX, 138 * scale + offsetY, p.nL.x, p.nL.y);
+            } else {
+                ctx.lineTo(p.vCenter.x, p.vCenter.y);
+                ctx.lineTo(p.nL.x, p.nL.y);
+            }
+        }
+        ctx.closePath();
+    }
+    // --- DRAW ENTIRE SHIRT ENGINE ---
+    function drawShirt(canvas, viewType, isThumbnail = false) {
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        
+        const scale = isThumbnail ? 0.13 : 1.0;
+        const dx = isThumbnail ? 42 : 0;
+        const dy = isThumbnail ? 32 : 0;
+        
+        // 1. Draw mannequin (Skip if thumbnail or try-on is active)
+        if (!isThumbnail && !tryOnImage) {
+            // Wooden stand pole
+            const standGrad = ctx.createLinearGradient(214, 0, 226, 0);
+            standGrad.addColorStop(0, '#5A3E2B');
+            standGrad.addColorStop(0.4, '#8B5E3C');
+            standGrad.addColorStop(1, '#4A3020');
+            ctx.fillStyle = standGrad;
+            ctx.fillRect(216, 420, 8, 140);
+            
+            // Wooden neck base
+            ctx.beginPath();
+            ctx.ellipse(220, 125, 12, 16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(208, 80, 24, 45);
+            ctx.stroke();
+            
+            // Finial bulb
+            ctx.beginPath();
+            ctx.arc(220, 80, 14, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(220, 65, 5, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Prepare patterns for each customized component
+        const bodyFab = fabricSelections['BODY'];
+        const bodyPatCanvas = createFabricPattern(bodyFab.type, bodyFab.c1, bodyFab.c2);
+        
+        const collarFab = fabricSelections['COLLAR'];
+        const collarPatCanvas = createFabricPattern(collarFab.type, collarFab.c1, collarFab.c2);
+        const collarPat = ctx.createPattern(collarPatCanvas, 'repeat');
+        
+        const pocketFab = fabricSelections['POCKET'];
+        const pocketPatCanvas = createFabricPattern(pocketFab.type, pocketFab.c1, pocketFab.c2);
+        const pocketPat = ctx.createPattern(pocketPatCanvas, 'repeat');
+        
+        const sleeveFab = fabricSelections['SLEEVE'];
+        const sleevePatCanvas = createFabricPattern(sleeveFab.type, sleeveFab.c1, sleeveFab.c2);
+        const sleevePat = ctx.createPattern(sleevePatCanvas, 'repeat');
+        
+        // Draw open V-neck inner showing white torso (Only if Front View)
+        if (viewType === 'front') {
+            ctx.save();
+            ctx.scale(scale, scale);
+            ctx.translate(dx, dy);
+            
+            ctx.beginPath();
+            ctx.moveTo(190, 125);
+            ctx.lineTo(220, 185);
+            ctx.lineTo(250, 125);
+            ctx.closePath();
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            
+            // soft depth shadow inside opening
+            const shadowGrad = ctx.createLinearGradient(220, 125, 220, 185);
+            shadowGrad.addColorStop(0, 'rgba(0,0,0,0.12)');
+            shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = shadowGrad;
+            ctx.fill();
+            ctx.restore();
+        }
+        
+        // Draw main body shape
+        ctx.save();
+        ctx.scale(scale, scale);
+        ctx.translate(dx, dy);
+        
+        getShirtBodyPath(ctx);
+        ctx.clip();
+        
+        // Fill main body
+        const pat = ctx.createPattern(bodyPatCanvas, 'repeat');
+        ctx.fillStyle = pat;
+        ctx.fill();
+        
+        // 3D Shadows & Highlighting Overlay
+        const radGrad = ctx.createRadialGradient(220, 270, 50, 220, 270, 230);
+        radGrad.addColorStop(0, 'rgba(255,255,255,0.15)');
+        radGrad.addColorStop(0.5, 'rgba(255,255,255,0)');
+        radGrad.addColorStop(1, 'rgba(0,0,0,0.22)');
+        ctx.fillStyle = radGrad;
+        ctx.fill();
+        
+        const leftGrad = ctx.createLinearGradient(120, 0, 200, 0);
+        leftGrad.addColorStop(0, 'rgba(0,0,0,0.25)');
+        leftGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = leftGrad;
+        ctx.fill();
+        
+        const rightGrad = ctx.createLinearGradient(320, 0, 240, 0);
+        rightGrad.addColorStop(0, 'rgba(0,0,0,0.2)');
+        rightGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = rightGrad;
+        ctx.fill();
+        
+        const bottomGrad = ctx.createLinearGradient(0, 360, 0, 480);
+        bottomGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        bottomGrad.addColorStop(1, 'rgba(0,0,0,0.28)');
+        ctx.fillStyle = bottomGrad;
+        ctx.fill();
+        
+        // Soft drape creases
+        ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(170, 250);
+        ctx.quadraticCurveTo(200, 305, 185, 370);
+        ctx.moveTo(270, 250);
+        ctx.quadraticCurveTo(240, 305, 255, 370);
+        ctx.stroke();
+        
+        ctx.restore(); // end of main body shadow clip
+        
+        // Draw Front & Back specific features
+        ctx.save();
+        ctx.scale(scale, scale);
+        ctx.translate(dx, dy);
+        
+        if (viewType === 'front') {
+            // Draw Collar points
+            if (custOpts.collarStyle !== 'Mandarin' && custOpts.collarStyle !== 'Band Collar') {
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.25)';
+                ctx.shadowBlur = 5;
+                ctx.shadowOffsetY = 2.5;
+                
+                // Left collar point
+                ctx.beginPath();
+                ctx.moveTo(190, 125);
+                if (custOpts.collarStyle === 'Club') {
+                    ctx.quadraticCurveTo(165, 150, 175, 175);
+                    ctx.quadraticCurveTo(195, 185, 220, 185);
+                } else if (custOpts.collarStyle === 'Cutaway') {
+                    ctx.lineTo(162, 152); ctx.lineTo(220, 185);
+                } else { // Regular & Button Down
+                    ctx.lineTo(166, 170); ctx.lineTo(220, 185);
+                }
+                ctx.lineTo(190, 125);
+                ctx.closePath();
+                ctx.fillStyle = collarPat;
+                ctx.fill();
+                
+                // Right collar point
+                ctx.beginPath();
+                ctx.moveTo(250, 125);
+                if (custOpts.collarStyle === 'Club') {
+                    ctx.quadraticCurveTo(275, 150, 265, 175);
+                    ctx.quadraticCurveTo(245, 185, 220, 185);
+                } else if (custOpts.collarStyle === 'Cutaway') {
+                    ctx.lineTo(278, 152); ctx.lineTo(220, 185);
+                } else {
+                    ctx.lineTo(274, 170); ctx.lineTo(220, 185);
+                }
+                ctx.lineTo(250, 125);
+                ctx.closePath();
+                ctx.fillStyle = collarPat;
+                ctx.fill();
+                
+                ctx.restore();
+                
+                // Fine outlines
+                ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+                ctx.lineWidth = 0.8;
+                ctx.beginPath();
+                ctx.moveTo(190, 125);
+                if (custOpts.collarStyle === 'Club') {
+                    ctx.quadraticCurveTo(165, 150, 175, 175); ctx.quadraticCurveTo(195, 185, 220, 185);
+                } else if (custOpts.collarStyle === 'Cutaway') {
+                    ctx.lineTo(162, 152); ctx.lineTo(220, 185);
+                } else {
+                    ctx.lineTo(166, 170); ctx.lineTo(220, 185);
+                }
+                ctx.moveTo(250, 125);
+                if (custOpts.collarStyle === 'Club') {
+                    ctx.quadraticCurveTo(275, 150, 265, 175); ctx.quadraticCurveTo(245, 185, 220, 185);
+                } else if (custOpts.collarStyle === 'Cutaway') {
+                    ctx.lineTo(278, 152); ctx.lineTo(220, 185);
+                } else {
+                    ctx.lineTo(274, 170); ctx.lineTo(220, 185);
+                }
+                ctx.stroke();
+                
+                // collar point buttons (Button Down)
+                if (custOpts.collarStyle === 'Button Down') {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.strokeStyle = '#aaaaaa';
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath(); ctx.arc(173, 164, 1.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(267, 164, 1.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                }
+            } else {
+                // Mandarin collar band
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(190, 125);
+                ctx.quadraticCurveTo(220, 138, 250, 125);
+                ctx.lineTo(248, 116);
+                ctx.quadraticCurveTo(220, 128, 192, 116);
+                ctx.closePath();
+                ctx.fillStyle = collarPat;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+                ctx.restore();
+            }
+            
+            // Placket
+            let placketStartY = 185;
+            if (custOpts.collarStyle === 'Mandarin' || custOpts.collarStyle === 'Band Collar') {
+                placketStartY = 138;
+            }
+            const hemY = 450;
+            ctx.fillStyle = pat;
+            ctx.fillRect(214, placketStartY, 12, hemY - placketStartY);
+            
+            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(214, placketStartY); ctx.lineTo(214, hemY);
+            ctx.moveTo(226, placketStartY); ctx.lineTo(226, hemY);
+            ctx.stroke();
+            
+            // Placket shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.06)';
+            ctx.fillRect(226, placketStartY, 2, hemY - placketStartY);
+            
+            // Placket buttons
+            const btnCount = 6;
+            const btnStartY = placketStartY + 20;
+            const btnEndY = hemY - 20;
+            const spacing = (btnEndY - btnStartY) / (btnCount - 1);
+            for (let i = 0; i < btnCount; i++) {
+                const by = btnStartY + i * spacing;
+                ctx.beginPath();
+                ctx.arc(220, by, 3.2, 0, Math.PI * 2);
+                
+                if (custOpts.collarButtons === 'White Pearl') {
+                    ctx.fillStyle = '#fbfbf9'; ctx.strokeStyle = '#d0cfc9';
+                } else if (custOpts.collarButtons === 'Contrast') {
+                    ctx.fillStyle = '#222222'; ctx.strokeStyle = '#000000';
+                } else if (custOpts.collarButtons === 'Metal Snap') {
+                    ctx.fillStyle = '#b0b0b0'; ctx.strokeStyle = '#606060';
+                } else { // Matching
+                    ctx.fillStyle = bodyFab.c2; ctx.strokeStyle = bodyFab.c1;
+                }
+                ctx.lineWidth = 0.8;
+                ctx.fill();
+                ctx.stroke();
+            }
+            
+            // Pockets
+            const drawPocket = (px, py) => {
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.08)';
+                ctx.shadowBlur = 3;
+                ctx.shadowOffsetY = 1;
+                
+                if (custOpts.pocketType === 'Welt Pocket') {
+                    ctx.beginPath();
+                    ctx.rect(px, py + 5, 36, 6);
+                    ctx.fillStyle = pocketPat;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+                    ctx.stroke();
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.fillRect(px, py + 4, 36, 1);
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px + 36, py);
+                    ctx.lineTo(px + 36, py + 36);
+                    ctx.lineTo(px + 18, py + 43);
+                    ctx.lineTo(px, py + 36);
+                    ctx.closePath();
+                    ctx.fillStyle = pocketPat;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                    
+                    if (custOpts.pocketType === 'Flap Pocket') {
+                        ctx.beginPath();
+                        ctx.moveTo(px - 1, py - 1);
+                        ctx.lineTo(px + 37, py - 1);
+                        ctx.lineTo(px + 37, py + 11);
+                        ctx.lineTo(px + 18, py + 16);
+                        ctx.lineTo(px - 1, py + 11);
+                        ctx.closePath();
+                        ctx.fillStyle = pocketPat;
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                }
+                ctx.restore();
+            };
+            
+            if (custOpts.pocketType !== 'No Pocket') {
+                if (custOpts.pocketPosition === 'Left Chest' || custOpts.pocketPosition === 'Both Sides') {
+                    drawPocket(160, 220);
+                }
+                if (custOpts.pocketPosition === 'Right Chest' || custOpts.pocketPosition === 'Both Sides') {
+                    drawPocket(244, 220);
+                }
+            }
+        } else {
+            // Back View details
+            ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(130, 175); ctx.lineTo(310, 175);
+            ctx.moveTo(130, 178); ctx.lineTo(310, 178);
+            ctx.stroke();
+            
+            // Darts
+            ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(180, 250); ctx.quadraticCurveTo(185, 310, 180, 370);
+            ctx.moveTo(260, 250); ctx.quadraticCurveTo(255, 310, 260, 370);
+            ctx.stroke();
+        }
+        
+        // Monogram Embroidered Text
+        if (viewType === 'front' && custOpts.namePosition !== 'None' && custOpts.nameText) {
+            ctx.save();
+            let fontStr = "10px 'DM Sans'";
+            if (custOpts.nameFont === 'Classic Serif') fontStr = "bold 9px 'Playfair Display'";
+            else if (custOpts.nameFont === 'Modern Script') fontStr = "italic 10px 'Playfair Display'";
+            else if (custOpts.nameFont === 'Bold Block') fontStr = "bold 9px 'DM Sans'";
+            else if (custOpts.nameFont === 'Italic') fontStr = "italic 9px 'DM Sans'";
+            
+            ctx.font = fontStr;
+            ctx.fillStyle = '#c4846a';
+            ctx.textAlign = 'center';
+            
+            let drawIt = false;
+            let mx = 220, my = 220;
+            
+            if (custOpts.namePosition === 'Left Chest') {
+                mx = 178;
+                my = (custOpts.pocketType !== 'No Pocket' && (custOpts.pocketPosition === 'Left Chest' || custOpts.pocketPosition === 'Both Sides')) ? 212 : 230;
+                drawIt = true;
+            } else if (custOpts.namePosition === 'Right Chest') {
+                mx = 262;
+                my = (custOpts.pocketType !== 'No Pocket' && (custOpts.pocketPosition === 'Right Chest' || custOpts.pocketPosition === 'Both Sides')) ? 212 : 230;
+                drawIt = true;
+            } else if (custOpts.namePosition === 'Back Collar' && viewType === 'back') {
+                mx = 220;
+                my = 165;
+                drawIt = true;
+            } else if (custOpts.namePosition === 'Cuff' && custOpts.sleeveLength === 'Full Sleeve') {
+                mx = 120;
+                my = 355;
+                drawIt = true;
+            }
+            
+            if (drawIt) {
+                ctx.fillText(custOpts.nameText.toUpperCase(), mx, my);
+            }
+            ctx.restore();
+        }
+        
+        ctx.restore();
+    }
+    // --- MAIN RENDER LOOP ---
+    function drawMainShirt() {
+        const mainCanvas = document.getElementById('shirt-canvas');
+        const ctx = mainCanvas.getContext('2d');
+        
+        // Clear main canvas
+        ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+        
+        // Draw Try-On background photo if active
+        if (tryOnImage) {
+            ctx.drawImage(tryOnImage, 0, 0, mainCanvas.width, mainCanvas.height);
+            // Draw a subtle translucent dark overlay to pop the shirt details
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
+        }
+        
+        // Render shirt shape on top
+        drawShirt(mainCanvas, currentView, false);
+    }
+    
+    function drawThumbnail() {
+        const thumbCanvas = document.getElementById('thumbnail-canvas');
+        const oppositeView = currentView === 'front' ? 'back' : 'front';
+        drawShirt(thumbCanvas, oppositeView, true);
+        
+        // label
+        document.getElementById('view-thumbnail-label').innerText = oppositeView;
+    }
+    // --- RE-RENDER ENTIRE CANVAS ---
+    function updateStudio() {
+        drawMainShirt();
+        drawThumbnail();
+        updatePriceDisplay();
+    }
+    // --- FABRIC MANAGEMENT ---
+    function renderGrid() {
+        const grid = document.getElementById('fabric-grid-container');
+        grid.innerHTML = '';
+        
+        // Apply category filter
+        let filtered = fabrics;
+        if (activeCategory !== 'all') {
+            filtered = fabrics.filter(f => f.category === activeCategory);
+        }
+        
+        // Apply price sorting
+        if (sortOrder === 'asc') {
+            filtered = [...filtered].sort((a, b) => a.price - b.price);
+        } else if (sortOrder === 'desc') {
+            filtered = [...filtered].sort((a, b) => b.price - a.price);
+        }
+        
+        filtered.forEach(f => {
+            const card = document.createElement('div');
+            card.className = 'fabric-card';
+            card.onclick = () => pickFab(f);
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 150;
+            canvas.height = 150;
+            const cCtx = canvas.getContext('2d');
+            
+            // Draw pattern on card canvas
+            const patCanvas = createFabricPattern(f.type, f.c1, f.c2);
+            const pat = cCtx.createPattern(patCanvas, 'repeat');
+            cCtx.fillStyle = pat;
+            cCtx.fillRect(0, 0, 150, 150);
+            
+            // shading overlay for fabric card grid
+            const grad = cCtx.createLinearGradient(0, 0, 0, 150);
+            grad.addColorStop(0, 'rgba(0,0,0,0.1)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.3)');
+            cCtx.fillStyle = grad;
+            cCtx.fillRect(0, 0, 150, 150);
+            
+            card.appendChild(canvas);
+            
+            // Badges mapping
+            // info badge: small dark circle top-left with "info" text
+            if (f.showInfo) {
+                const info = document.createElement('div');
+                info.className = 'badge-info';
+                info.innerText = 'info';
+                info.onclick = (e) => {
+                    e.stopPropagation();
+                    showToast(`${f.name} (${f.category.toUpperCase()}) fabric: ₹${f.price}`);
+                };
+                card.appendChild(info);
+            }
+            
+            // rotate button: small dark pill next to info
+            if (f.showRotate) {
+                const rotate = document.createElement('div');
+                rotate.className = 'badge-rotate';
+                rotate.innerText = 'rotate';
+                rotate.onclick = (e) => {
+                    e.stopPropagation();
+                    card.classList.add('rotate-active');
+                    setTimeout(() => card.classList.remove('rotate-active'), 800);
+                    showToast(`Rotating ${f.name} swatch`);
+                };
+                card.appendChild(rotate);
+            }
+            
+            // Applied badge: active top center
+            const activePart = PARTS[activePartIndex];
+            const activePartFabric = fabricSelections[activePart];
+            if (f.id === activePartFabric.id) {
+                const applied = document.createElement('div');
+                applied.className = 'badge-applied';
+                applied.innerText = 'Applied';
+                card.appendChild(applied);
+            }
+            
+            // Label bottom-left
+            const label = document.createElement('div');
+            label.className = 'fabric-label';
+            label.innerText = f.name;
+            card.appendChild(label);
+            
+            grid.appendChild(card);
+        });
+    }
+    function pickFab(f) {
+        const activePart = PARTS[activePartIndex];
+        if (splitMode) {
+            fabricSelections[activePart] = f;
+            showToast(`Applied ${f.name} to ${activePart}`);
+        } else {
+            // Apply to all parts
+            PARTS.forEach(p => {
+                fabricSelections[p] = f;
+            });
+            showToast(`Applied ${f.name} to entire shirt`);
+        }
+        renderGrid();
+        updateStudio();
+    }
+    function updatePriceDisplay() {
+        const basePrice = fabricSelections['BODY'].price;
+        // Calculation: split design adds ₹150 surcharge
+        let isSplit = false;
+        const bodyId = fabricSelections['BODY'].id;
+        PARTS.forEach(p => {
+            if (fabricSelections[p].id !== bodyId) isSplit = true;
+        });
+        
+        const price = basePrice + (isSplit ? 150 : 0);
+        document.getElementById('price-val-display').innerText = `₹${price}`;
+        document.getElementById('price-old-display').innerText = `₹${price * 2}`;
+    }
+    // --- NAVIGATION / PART SELECTION ---
+    function navigatePart(dir) {
+        activePartIndex = (activePartIndex + dir + PARTS.length) % PARTS.length;
+        const part = PARTS[activePartIndex];
+        
+        // Update title header
+        document.getElementById('panel-part-title').innerText = `${part} FABRIC`;
+        renderGrid();
+        showToast(`Editing fabric for ${part}`);
+    }
+    // --- FILTER & SORT ACTIONS ---
+    const filterPill = document.getElementById('filter-pill-btn');
+    const filterDropdown = document.getElementById('filter-dropdown-menu');
+    
+    filterPill.onclick = (e) => {
+        e.stopPropagation();
+        const disp = filterDropdown.style.display;
+        filterDropdown.style.display = disp === 'block' ? 'none' : 'block';
+    };
+    
+    document.addEventListener('click', () => {
+        filterDropdown.style.display = 'none';
+    });
+    function applyFilter(cat) {
+        activeCategory = cat;
+        
+        // update active options styling
+        const opts = document.querySelectorAll('.filter-option');
+        opts.forEach(opt => {
+            if(opt.innerText.toLowerCase().includes(cat)) {
+                opt.classList.add('active');
+            } else {
+                opt.classList.remove('active');
+            }
+        });
+        
+        renderGrid();
+        showToast(`Filtered by ${cat.toUpperCase()}`);
+    }
+    function toggleSort() {
+        if (sortOrder === 'none' || sortOrder === 'desc') {
+            sortOrder = 'asc';
+            document.getElementById('sort-arrow').innerText = '↑';
+            showToast("Sorted by price: Low to High");
+        } else {
+            sortOrder = 'desc';
+            document.getElementById('sort-arrow').innerText = '↓';
+            showToast("Sorted by price: High to Low");
+        }
+        renderGrid();
+    }
+    // --- TOAST NOTIFICATIONS ---
+    function showToast(msg) {
+        const root = document.getElementById('toast-root');
+        
+        // Clear past toasts
+        root.innerHTML = '';
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = msg;
+        
+        root.appendChild(toast);
+        
+        // trigger animation
+        setTimeout(() => toast.classList.add('show'), 50);
+        
+        // auto dismiss 2.7s
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2700);
+    }
+    // --- CUSTOMISE MODAL SYSTEM ---
+    function openModal(cat) {
+        activeModalCategory = cat;
+        const config = modalOptions[cat];
+        
+        document.getElementById('modal-title-text').innerText = config.title;
+        const container = document.getElementById('modal-groups-container');
+        container.innerHTML = '';
+        
+        // Pre-fill selections
+        pendingModalSelections = {};
+        config.groups.forEach(g => {
+            pendingModalSelections[g.key] = custOpts[g.key];
+        });
+        
+        config.groups.forEach(g => {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'modal-option-section';
+            
+            const label = document.createElement('div');
+            label.className = 'modal-group-label';
+            label.innerText = g.label;
+            groupDiv.appendChild(label);
+            
+            const chips = document.createElement('div');
+            chips.className = 'chip-container';
+            
+            g.choices.forEach(ch => {
+                const btn = document.createElement('button');
+                btn.className = 'chip-btn';
+                if (custOpts[g.key] === ch) btn.classList.add('selected');
+                btn.innerText = ch;
+                btn.onclick = () => {
+                    // deselect past siblings
+                    chips.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    pendingModalSelections[g.key] = ch;
+                };
+                chips.appendChild(btn);
+            });
+            groupDiv.appendChild(chips);
+            container.appendChild(groupDiv);
+        });
+        
+        // If monogram personalization, show text input
+        if (config.showTextInput) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'modal-option-section';
+            
+            const label = document.createElement('div');
+            label.className = 'modal-group-label';
+            label.innerText = 'MONOGRAM EMBROIDERY TEXT';
+            groupDiv.appendChild(label);
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'modal-input-field';
+            input.maxLength = 10;
+            input.value = custOpts.nameText || 'MAQSUR';
+            input.id = 'name-text-input';
+            
+            groupDiv.appendChild(input);
+            container.appendChild(groupDiv);
+        }
+        
+        document.getElementById('customise-modal').style.display = 'flex';
+    }
+    function closeModal() {
+        document.getElementById('customise-modal').style.display = 'none';
+        activeModalCategory = null;
+    }
+    function applySelection() {
+        // Save pending changes
+        for (let key in pendingModalSelections) {
+            custOpts[key] = pendingModalSelections[key];
+        }
+        
+        // If name text input exists, save it
+        const input = document.getElementById('name-text-input');
+        if (input) {
+            custOpts.nameText = input.value;
+        }
+        
+        // Update display values on right buttons
+        document.getElementById('size-val').innerText = custOpts.sizeChest;
+        document.getElementById('fit-val').innerText = custOpts.fitFit.replace(' Fit', '');
+        document.getElementById('style-val').innerText = custOpts.styleGender;
+        
+        closeModal();
+        updateStudio();
+        showToast("Customisation applied successfully!");
+    }
+    // --- VIRTUAL TRY-ON MODULE ---
+    const tryOnTrigger = document.getElementById('tryon-trigger');
+    const tryOnModal = document.getElementById('tryon-modal');
+    const tryOnClose = document.getElementById('tryon-close-btn');
+    const tryOnVideo = document.getElementById('tryon-video');
+    const tryOnCapture = document.getElementById('tryon-capture-btn');
+    const tryOnUpload = document.getElementById('tryon-upload');
+    tryOnTrigger.onclick = async () => {
+        tryOnModal.style.display = 'flex';
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 440, height: 560 } });
+            tryOnVideo.srcObject = cameraStream;
+        } catch (err) {
+            console.error("Camera access failed:", err);
+            showToast("Webcam access blocked. Please upload a photo!");
+        }
+    };
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+        tryOnVideo.srcObject = null;
+    }
+    function closeTryOnModal() {
+        stopCamera();
+        tryOnModal.style.display = 'none';
+    }
+    tryOnClose.onclick = closeTryOnModal;
+    // Capture from Camera Feed
+    tryOnCapture.onclick = () => {
+        if (!cameraStream) {
+            showToast("No active camera feed!");
+            return;
+        }
+        
+        const offscreen = document.createElement('canvas');
+        offscreen.width = 440;
+        offscreen.height = 560;
+        const oCtx = offscreen.getContext('2d');
+        
+        // Draw video mirrored
+        oCtx.save();
+        oCtx.translate(440, 0);
+        oCtx.scale(-1, 1);
+        oCtx.drawImage(tryOnVideo, 0, 0, 440, 560);
+        oCtx.restore();
+        
+        tryOnImage = offscreen;
+        closeTryOnModal();
+        
+        // Show result on stage
+        document.getElementById('exit-tryon-btn').style.display = 'block';
+        updateStudio();
+        showToast("Virtual Try-On activated!");
+    };
+    // Upload photo
+    tryOnUpload.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const offscreen = document.createElement('canvas');
+                    offscreen.width = 440;
+                    offscreen.height = 560;
+                    const oCtx = offscreen.getContext('2d');
+                    oCtx.drawImage(img, 0, 0, 440, 560);
+                    
+                    tryOnImage = offscreen;
+                    closeTryOnModal();
+                    
+                    document.getElementById('exit-tryon-btn').style.display = 'block';
+                    updateStudio();
+                    showToast("Photo uploaded successfully!");
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    function exitTryOn() {
+        tryOnImage = null;
+        document.getElementById('exit-tryon-btn').style.display = 'none';
+        updateStudio();
+        showToast("Returned to Designer Stage");
+    }
+    // --- OTHER INTERACTIVE ACTIONS ---
+    
+    // View Switcher (Thumbnail click)
+    document.getElementById('view-toggle-thumbnail').onclick = () => {
+        currentView = currentView === 'front' ? 'back' : 'front';
+        updateStudio();
+        showToast(`Switched to ${currentView} view`);
+    };
+    // Split Button Toggle
+    const splitBtn = document.getElementById('split-toggle-btn');
+    splitBtn.onclick = () => {
+        splitMode = !splitMode;
+        if (splitMode) {
+            splitBtn.classList.add('active');
+            showToast("Split Fabric mode enabled");
+        } else {
+            splitBtn.classList.remove('active');
+            // unify all fabric parts back to BODY fabric
+            const baseFab = fabricSelections['BODY'];
+            PARTS.forEach(p => fabricSelections[p] = baseFab);
+            renderGrid();
+            updateStudio();
+            showToast("Fabric unified across all panels");
+        }
+    };
+    // Add to Cart
+    document.getElementById('cart-add-btn').onclick = () => {
+        const price = document.getElementById('price-val-display').innerText;
+        showToast(`Success! Bespoke shirt added to cart at ${price}`);
+    };
+    // Share API Integration / Clipboard Copy
+    document.getElementById('share-btn').onclick = async () => {
+        const shareData = {
+            title: 'Maqsurown Bespoke Shirt',
+            text: 'Check out my custom tailored shirt design!',
+            url: window.location.href
+        };
+        
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                showToast("Shared successfully!");
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                showToast("Link copied to clipboard!");
+            }
+        } catch (err) {
+            showToast("Failed to share link");
+        }
+    };
+    // Settings trigger (top-left Settings icon)
+    document.getElementById('settings-trigger').onclick = () => {
+        showToast("Maqsurown Bespoke Studio: v1.0.0");
+    };
+    // Canvas click hot-spots for interactive customization modal opening
+    document.getElementById('shirt-canvas').onclick = (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const clickX = ((e.clientX - rect.left) / rect.width) * 440;
+        const clickY = ((e.clientY - rect.top) / rect.height) * 560;
+        
+        // Detect component areas
+        if (clickY < 180 && clickX > 140 && clickX < 300) {
+            openModal('Collar');
+        } else if (clickY >= 210 && clickY <= 260 && (clickX >= 150 && clickX <= 200 || clickX >= 240 && clickX <= 290)) {
+            openModal('Pocket');
+        } else if (clickY >= 135 && clickY <= 380 && (clickX < 155 || clickX > 285)) {
+            openModal('Sleeve');
+        } else if (clickY >= 400 && clickY <= 480) {
+            openModal('Hem');
+        } else {
+            // default click cycles through active parts in fabric panel
+            navigatePart(1);
+        }
+    };
+    // --- INITIALIZATION ---
+    window.onload = () => {
+        renderGrid();
+        updateStudio();
+    };
+</script>
+</body>
+</html>
